@@ -9,7 +9,8 @@
     home: "{{ forksTunnelTargetHomeDirectory }}"
     shell: /sbin/nologin
     comment: Forks Tunnel Endpoint
-    umask: '0007'
+    umask: '0077'
+  run_once: true
 
   # Due to ansible warning
 - name: Create remote temp dir for ansible

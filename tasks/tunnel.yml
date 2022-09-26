@@ -31,7 +31,36 @@
       no-pty{% for tunnelPort in forksTunnelContextTunnelPorts %},permitopen="localhost:{{ tunnelPort }}"{% endfor %}
 
 
+- name: Remove Forks tunnel SSH public key from known hosts file
+  become: true
+  become_user: "{{ forksTunnelContextSourceSystemUsername }}"
+  known_hosts:
+    name: "{{ hostvars[forksTunnelContextTargetHostname]['ansible_host'] }}"
+    state: absent
+    path: "{{ forksTunnelContextSourceHomeDirectory }}/.ssh/known_hosts"
+
+- name: Scan for Forks tunnel endpoint SSH key
+  command: "ssh-keyscan {{ hostvars[forksTunnelContextTargetHostname]['ansible_host'] }}"
+  register: sshKnownHostsResult
+  changed_when: false
+  failed_when: false
+
+- name: Add/update the SSH public key for Forks tunnel endpoint SSH key in known hosts file
+  become: true
+  become_user: "{{ forksTunnelContextSourceSystemUsername }}"
+  known_hosts:
+    name: "{{ hostvars[forksTunnelContextTargetHostname]['ansible_host'] }}"
+    key: "{{ hostvars[forksTunnelContextTargetHostname]['ansible_host'] }} {{ knownHostPubkeyItem
+      | regex_replace('^.+[\\s](.+[\\s].+)$', '\\1') }}"
+    state: present
+    path: "{{ forksTunnelContextSourceHomeDirectory }}/.ssh/known_hosts"
+  loop: "{{ sshKnownHostsResult.stdout_lines }}"
+  loop_control:
+    loop_var: knownHostPubkeyItem
+
+
 - name: Generate Forks tunnel service file
+  become: true
   template:
     src: tunnel.service.j2
     dest: "{{ forksSystemServiceDirectory }}/{{ forksTunnelServiceName }}.service"
