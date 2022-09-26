@@ -1,2 +1,17 @@
 ---
-# tasks file for forks_tunnel
+
+# forksTunnelContextTunnelIdentifier
+# forksTunnelContextSourceHostname
+# forksTunnelContextSourceSystemUsername
+# forksTunnelContextSourceHomeDirectory
+# forksTunnelContextTargetHostname
+# forksTunnelContextTunnelPorts
+
+
+
+- name: Prepare Forks Tunnel
+  include_tasks: prepare.yml
+
+
+...
+

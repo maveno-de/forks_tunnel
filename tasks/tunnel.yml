@@ -1,0 +1,51 @@
+---
+
+
+- name: Ensure SSH directory
+  become: true
+  file:
+    path: "{{ forksTunnelContextSourceHomeDirectory }}/.ssh"
+    state: directory
+    owner: "{{ forksTunnelContextSourceSystemUsername }}"
+    group: "{{ forksTunnelContextSourceSystemUsername }}"
+    mode: 0700
+
+  #RESULT public key: forksTunnelSshKeypairResult.public_key 
+- name: Generate SSH keys on source host
+  become: true
+  community.crypto.openssh_keypair:
+    path: "{{ forksTunnelSourceKeyfilePath }}"
+    type: ed25519
+    owner: "{{ forksTunnelContextSourceSystemUsername }}"
+    group: "{{ forksTunnelContextSourceSystemUsername }}"
+    mode: 0600
+  register: forksTunnelSshKeypairResult
+
+- name: Add SSH public key to target host
+  become: true
+  delegate_to: "{{ forksTunnelContextTargetHostname }}"
+  ansible.posix.authorized_key:
+    user: "{{ forksTunnelTargetUsername }}"
+    key: "{{ forksTunnelSshKeypairResult.public_key }}"
+    key_options: >-
+      no-pty{% for tunnelPort in forksTunnelContextTunnelPorts %},permitopen="localhost:{{ tunnelPort }}"{% endfor %}
+
+
+- name: Generate Forks tunnel service file
+  template:
+    src: tunnel.service.j2
+    dest: "{{ forksSystemServiceDirectory }}/{{ forksTunnelServiceName }}.service"
+    owner: "{{ forksTunnelContextSourceSystemUsername }}"
+    group: "{{ forksTunnelContextSourceSystemUsername }}"
+    mode: 0600
+
+- name: Start Forks tunnel service
+  become: true
+  systemd:
+    name: "{{ forksTunnelServiceName }}.service"
+    state: restarted
+    enabled: true
+    daemon-reload: true
+
+
+...

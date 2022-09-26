@@ -1,2 +1,15 @@
 ---
-# vars file for forks_tunnel
+
+
+forksTunnelTargetUsername: ftunnel
+forksTunnelTargetHomeDirectory: "{{ forksUsersRootDirectory }}/{{ forksTunnelTargetUsername }}"
+
+forksTunnelSourceKeyfilePath: >-
+  {{ forksTunnelContextSourceHomeDirectory }}/.ssh/{{
+  forksTunnelContextTunnelIdentifier }}-ftunnel
+
+forksTunnelServiceName: >-
+  ftunnel-{{ forksTunnelContextTunnelIdentifier }}
+
+
+...

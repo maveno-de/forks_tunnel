@@ -1,0 +1,16 @@
+[Unit]
+Description=Forks Tunnel {{ forksTunnelContextTunnelIdentifier }}
+After=network.target
+
+[Service]
+User={{ forksTunnelContextSourceSystemUsername }}
+ExecStart=/usr/bin/ssh -NT -i {{ forksTunnelSourceKeyfilePath }}{%
+for tunnelPort in forksTunnelContextTunnelPorts %} -L {{ tunnelPort }}:localhost:{{ tunnelPort }}{%
+endfor %} {{ forksTunnelTargetUsername }}@{{
+hostvars[forksTunnelContextTargetHostname]['ansible_host'] }}
+
+RestartSec=5
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

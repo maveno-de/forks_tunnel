@@ -2,7 +2,7 @@ galaxy_info:
   author: Javanaut
   description: Setup SSH tunnels for Chia Forks
   company: Maveno
-  role_name: forks_tunnel
+  role_name: tunnel
   namespace: maveno_de
 
   # If the issue tracker for your role is not on github, uncomment the

@@ -1,0 +1,26 @@
+---
+
+
+- name: Create Forks tunnel system user on target host
+  delegate_to: "{{ forksTunnelContextTargetHostname }}"
+  become: true
+  user:
+    name: "{{ forksTunnelTargetUsername }}"
+    home: "{{ forksTunnelTargetHomeDirectory }}"
+    shell: /sbin/nologin
+    comment: Forks Tunnel Endpoint
+    umask: '0007'
+
+  # Due to ansible warning
+- name: Create remote temp dir for ansible
+  delegate_to: "{{ forksTunnelContextTargetHostname }}"
+  become: true
+  file:
+    path: "{{ forksTunnelTargetHomeDirectory }}/.ansible/tmp"
+    state: directory
+    owner: "{{ forksTunnelTargetUsername }}"
+    group: "{{ forksTunnelTargetUsername }}"
+    mode: 0750
+
+
+...
