@@ -1,0 +1,20 @@
+---
+
+
+# forksTunnelContextTunnelIdentifier
+# forksTunnelContextSourceHostname
+# forksTunnelContextSourceSystemUsername
+# forksTunnelContextSourceHomeDirectory
+# forksTunnelContextTargetHostname
+# forksTunnelContextTunnelPorts
+
+
+- name: Prepare Forks Tunnel
+  include_tasks: prepare.yml
+
+- name: Setup Forks Tunnel
+  when: inventory_hostname == forksTunnelContextSourceHostname
+  include_tasks: tunnel.yml
+
+
+...
