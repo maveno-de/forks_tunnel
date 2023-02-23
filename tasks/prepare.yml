@@ -1,7 +1,15 @@
 ---
 
 
+  # HINT: Exists-Check of module below failing ocassionally
+  # RESULT: exists: tunnelTargetUserExistsCommandResult.rc == 0
+- name: Check if tunnel system user exists on target host
+  delegate_to: "{{ forksTunnelContextTargetHostname }}"
+  command: "id -u {{ forksTunnelTargetUsername }}"
+  register: tunnelTargetUserExistsCommandResult
+
 - name: Create Forks tunnel system user on target host
+  when: tunnelTargetUserExistsCommandResult.rc != 0
   delegate_to: "{{ forksTunnelContextTargetHostname }}"
   become: true
   user:

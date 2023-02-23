@@ -40,7 +40,8 @@
     path: "{{ forksTunnelContextSourceHomeDirectory }}/.ssh/known_hosts"
 
 - name: Scan for Forks tunnel endpoint SSH key
-  command: "ssh-keyscan {{ hostvars[forksTunnelContextTargetHostname]['ansible_host'] }}"
+  command: >-
+    ssh-keyscan {{ hostvars[forksTunnelContextTargetHostname]['ansible_host'] }}
   register: sshKnownHostsResult
   changed_when: false
   failed_when: false
