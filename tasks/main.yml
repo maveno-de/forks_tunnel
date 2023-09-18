@@ -9,11 +9,21 @@
 # forksTunnelContextTunnelPorts
 
 
+- name: Stop Forks Tunnel
+  when:
+    - forksTunnelContextTunnelState == 'stopped'
+    - inventory_hostname == forksTunnelContextSourceHostname
+  include_tasks: stop.yml
+
+
 - name: Prepare Forks Tunnel
+  when: forksTunnelContextTunnelState != 'stopped'
   include_tasks: prepare.yml
 
-- name: Setup Forks Tunnel
-  when: inventory_hostname == forksTunnelContextSourceHostname
+- name: Start Forks Tunnel
+  when:
+    - forksTunnelContextTunnelState != 'stopped'
+    - inventory_hostname == forksTunnelContextSourceHostname
   include_tasks: tunnel.yml
 
 

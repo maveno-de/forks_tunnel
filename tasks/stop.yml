@@ -1,0 +1,12 @@
+---
+
+
+- name: Stop Forks tunnel service
+  become: true
+  systemd:
+    name: "{{ forksTunnelServiceName }}.service"
+    state: stopped
+    enabled: false
+
+
+...
